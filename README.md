@@ -16,6 +16,10 @@ the inspection form **once**, and the plugin creates one inspection per tree.
 4. The plugin creates the same child for every other selected feature and reports
    how many were added. The selection stays, so you can add another kind of child
    right away.
+   
+<img width="650" height="810" alt="QField Kinder" src="https://github.com/user-attachments/assets/470e31f1-4e97-430a-a71b-6cd8ca86893a" />
+
+
 
 ## What gets copied
 
