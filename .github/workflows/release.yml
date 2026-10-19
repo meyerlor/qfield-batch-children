@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt translation tools
+        run: sudo apt-get update && sudo apt-get install -y qt6-l10n-tools
+
+      - name: Build plugin zip
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/^version=.*/version=${VERSION}/" metadata.txt
+          for ts in i18n/*.ts; do
+            /usr/lib/qt6/bin/lrelease "$ts" -qm "$(basename "${ts%.ts}").qm"
+          done
+          mkdir dist
+          zip "dist/qfield-batch-children-${VERSION}.zip" main.qml metadata.txt icon.svg LICENSE *.qm
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --title "$GITHUB_REF_NAME" --generate-notes

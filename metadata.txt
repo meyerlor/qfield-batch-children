@@ -1,0 +1,7 @@
+[general]
+name=Batch Child Features
+description=Add a child feature (e.g. an inspection) to all selected parent features at once: fill the form once, QField creates one child per selected feature.
+author=meyerlor
+icon=icon.svg
+version=dev
+homepage=https://github.com/meyerlor/qfield-batch-children
