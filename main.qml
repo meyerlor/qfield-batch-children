@@ -94,12 +94,35 @@ Item {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
+    // Grow with the longest relation name (like QField's QfMenu), capped at the window width;
+    // names that still don't fit wrap instead of being elided
+    width: {
+      let result = 200;
+      for (let i = 0; i < count; ++i) {
+        const item = itemAt(i);
+        if (item && item.contentItem) {
+          result = Math.max(result, item.contentItem.implicitWidth + item.leftPadding + item.rightPadding);
+        }
+      }
+      return Math.min(result + leftPadding + rightPadding, parent.width - 32);
+    }
+
     Instantiator {
       model: plugin.childRelations
       delegate: MenuItem {
+        id: relationItem
         text: modelData.label
         font: Theme.defaultFont
-        height: 48
+        implicitHeight: Math.max(48, contentItem.implicitHeight + topPadding + bottomPadding)
+
+        contentItem: Text {
+          text: relationItem.text
+          font: relationItem.font
+          color: Theme.mainTextColor
+          wrapMode: Text.Wrap
+          verticalAlignment: Text.AlignVCenter
+        }
+
         onTriggered: Qt.callLater(plugin.start, modelData)
       }
       onObjectAdded: (index, object) => relationChooser.insertItem(index, object)
